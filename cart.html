@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - FoodStore</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .cart-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 32px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .cart-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0;
+            color: var(--dark-color);
+        }
+
+        .cart-items-list {
+            margin-bottom: 32px;
+        }
+
+        .cart-item-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: #fbfbfb;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #f1f1f1;
+            transition: all 0.3s ease;
+        }
+
+        .cart-item-card:hover {
+            transform: translateX(4px);
+            border-color: var(--primary-color);
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h4 {
+            margin: 0 0 4px;
+            font-size: 1.1rem;
+            color: var(--dark-color);
+        }
+
+        .cart-item-info p {
+            margin: 0;
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--gray-200);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .qty-val {
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .cart-item-price {
+            text-align: right;
+        }
+
+        .price-tag {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .remove-btn {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 8px;
+            transition: transform 0.2s;
+        }
+
+        .remove-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .checkout-section {
+            background: var(--gray-50);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .checkout-form h3 {
+            margin: 0 0 20px;
+            font-size: 1.25rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 16px 0;
+            border-top: 1px dashed var(--gray-200);
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .cart-item-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .cart-item-price {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="utensils"></i>
+                </div>
+                <span>FoodStore</span>
+            </a>
+            <div id="auth-links" class="navbar-actions">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="cart-container">
+            <div class="cart-header">
+                <h1 class="cart-title">🛒 Your Cart</h1>
+                <a href="index.html" class="btn btn-outline" style="border:none;">
+                    <i data-lucide="arrow-left" style="width:16px; margin-right:8px;"></i> Continue Shopping
+                </a>
+            </div>
+
+            <div id="cart-items-container">
+                <!-- Injected by JS -->
+                <div class="loading" style="text-align:center; padding:40px;">
+                    <div class="loading-spinner"></div>
+                    <p>Loading your cart...</p>
+                </div>
+            </div>
+
+            <div id="checkout-area" style="display:none;">
+                <div class="checkout-section">
+                    <div class="checkout-form">
+                        <h3>Delivery Details</h3>
+                        <div class="form-group" style="margin-bottom:16px">
+                            <label style="display:block; font-weight:700; margin-bottom:8px;">Phone Number</label>
+                            <input type="tel" id="checkout-phone" placeholder="e.g. 0300-1234567"
+                                style="width:100%; padding:12px; border:1px solid var(--gray-300); border-radius:12px;">
+                        </div>
+                        <div class="form-group">
+                            <label style="display:block; font-weight:700; margin-bottom:8px;">Delivery Address</label>
+                            <textarea id="checkout-address" rows="3" placeholder="Where should we deliver?"
+                                style="width:100%; padding:12px; border:1px solid var(--gray-300); border-radius:12px;"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Total Amount:</span>
+                        <span id="cart-total-display">Rs 0</span>
+                    </div>
+
+                    <button id="final-checkout-btn" class="btn btn-block" style="padding:16px; font-size:1.1rem;">
+                        <i data-lucide="shopping-bag" style="width:20px; margin-right:8px;"></i> Place My Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <div class="bottom-nav" id="mobile-bottom-nav">
+        <!-- Injected by JS -->
+    </div>
+
+    <script type="module" src="js/cart.js"></script>
+</body>
+
+</html>

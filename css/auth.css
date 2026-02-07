@@ -1,0 +1,314 @@
+/* Modern Authentication Styles */
+:root {
+    --auth-bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    --auth-card-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
+    --input-bg: #f5f6fa;
+    --input-border: #dcdde1;
+    --primary-gradient: linear-gradient(to right, #ff6b6b, #ee5253);
+    --hover-gradient: linear-gradient(to right, #ff5252, #d63031);
+}
+
+body.auth-body {
+    background: var(--auth-bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.auth-container {
+    display: flex;
+    background: white;
+    border-radius: 20px;
+    box-shadow: var(--auth-card-shadow);
+    overflow: hidden;
+    width: 100%;
+    max-width: 900px;
+    min-height: 600px;
+    /* Animation: Card Pop */
+    animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Left Side - Image/Brand */
+.auth-visual {
+    flex: 1;
+    background: url('https://images.unsplash.com/photo-1543353071-873f17a7a088?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+    position: relative;
+    display: none;
+    min-width: 45%;
+    /* Animation: Image Fade */
+    animation: fadeIn 1.2s ease-in-out;
+}
+
+.signup-bg {
+    background-image: url('https://images.unsplash.com/photo-1556910103-1c02745a30bf?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+}
+
+.auth-visual::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+}
+
+.auth-visual-content {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    right: 40px;
+    color: white;
+    z-index: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    /* Animation: Slide Up */
+    animation: slideUp 0.8s ease-out 0.4s both;
+}
+
+.auth-visual-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+.auth-visual-content p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+@media (min-width: 768px) {
+    .auth-visual {
+        display: block;
+    }
+}
+
+/* Right Side - Form */
+.auth-form-container {
+    flex: 1;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Animation: Fade In Form */
+    animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.auth-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    display: inline-block;
+    letter-spacing: -1px;
+}
+
+.auth-title {
+    font-size: 1.5rem;
+    color: var(--dark-color);
+    margin-bottom: 10px;
+}
+
+.auth-subtitle {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+}
+
+/* Form Elements */
+.modern-form .form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.modern-form label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.modern-input,
+.modern-select {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--input-bg);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.modern-select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d3436' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    padding-right: 2.5rem;
+    /* Space for the arrow */
+}
+
+/* Style the dropdown options (Limited browser support) */
+.modern-select option {
+    background: white;
+    color: #2d3436;
+    padding: 10px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.modern-input:focus,
+.modern-select:focus {
+    background: white;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 4px rgba(78, 205, 196, 0.1);
+    outline: none;
+}
+
+.modern-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-primary:hover {
+    background: var(--hover-gradient);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+}
+
+/* Google Button */
+.google-btn {
+    background: white;
+    border: 1px solid #dfe6e9;
+    color: #2d3436;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.google-btn:hover {
+    background: #f7f9fc;
+    border-color: #b2bec3;
+}
+
+.google-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: #b2bec3;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #dfe6e9;
+}
+
+.divider span {
+    padding: 0 10px;
+    font-size: 0.85rem;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: #636e72;
+}
+
+.auth-footer a {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Animations */
+@keyframes popIn {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Staggered animation for inputs */
+.modern-form .form-group:nth-child(1) {
+    animation: slideUp 0.5s ease-out 0.3s both;
+}
+
+.modern-form .form-group:nth-child(2) {
+    animation: slideUp 0.5s ease-out 0.4s both;
+}
+
+.modern-form .form-group:nth-child(3) {
+    animation: slideUp 0.5s ease-out 0.5s both;
+}
+
+.modern-form .form-group:nth-child(4) {
+    animation: slideUp 0.5s ease-out 0.6s both;
+}
+
+.modern-btn {
+    animation: slideUp 0.5s ease-out 0.7s both;
+}

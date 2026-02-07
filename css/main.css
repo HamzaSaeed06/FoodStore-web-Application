@@ -1,0 +1,831 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+
+:root {
+    --primary-color: #ff6b6b;
+    --secondary-color: #4ecdc4;
+    --dark-color: #2d3436;
+    --light-color: #f7f9fc;
+    --grey-color: #dfe6e9;
+    --success-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --font-main: 'Poppins', sans-serif;
+
+    /* Food Card Design System */
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Food Card Specific */
+    --food-card-radius: 16px;
+    --food-card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --food-card-shadow-hover: 0 12px 24px rgba(255, 107, 107, 0.2);
+    --food-card-transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Consistent Spacing Scale - 2025 Standard */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-20: 80px;
+
+    /* Food Industry Colors */
+    --color-price: #FF6B35;
+    --color-category: #64748B;
+    --color-card-bg: #FFFFFF;
+    --color-warm-bg: #FAFAF9;
+
+    /* Neutral Grays - Proper Scale */
+    --gray-50: #f8f9fa;
+    --gray-100: #f1f3f5;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-500: #adb5bd;
+    --gray-700: #495057;
+    --gray-900: #212529;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    line-height: 1.6;
+    font-size: clamp(14px, 2vw, 16px);
+    /* Responsive base font */
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Global Icon Responsiveness */
+[data-lucide],
+ion-icon {
+    vertical-align: middle;
+    /* Ensure they don't blow up layout */
+    max-width: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+/* Utilities */
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-left: clamp(var(--space-4), 4vw, var(--space-10));
+    padding-right: clamp(var(--space-4), 4vw, var(--space-10));
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #ff5252;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.12);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--grey-color);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.navbar {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    padding: clamp(12px, 3vw, 20px) 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(1.25rem, 3vw, 1.6rem);
+    font-weight: 800;
+    color: var(--primary-color);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.02);
+}
+
+.logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #ff8e8e 100%);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.logo-icon i {
+    width: 24px;
+    height: 24px;
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: clamp(var(--space-2), 2vw, var(--space-5));
+}
+
+.nav-links {
+    display: flex;
+    gap: clamp(var(--space-2), 2vw, var(--space-5));
+    align-items: center;
+}
+
+.nav-menu-link {
+    text-decoration: none;
+    color: var(--dark-color);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.nav-menu-link:hover,
+.nav-menu-link.active {
+    color: var(--primary-color);
+    background: rgba(255, 107, 107, 0.08);
+    /* Subtle primary tint */
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+    .navbar .navbar-actions {
+        display: none;
+        /* Hide top actions on mobile */
+    }
+
+    .navbar .container {
+        justify-content: center;
+        padding: 5px 0;
+    }
+
+    body {
+        padding-bottom: 70px;
+        /* Space for bottom nav */
+    }
+}
+
+/* Bottom Navigation Bar (Mobile Only) */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    display: none;
+    /* Hidden by default */
+    justify-content: space-around;
+    align-items: center;
+    height: 65px;
+    padding: 0 10px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    border-radius: 20px 20px 0 0;
+}
+
+@media (max-width: 768px) {
+    .bottom-nav {
+        display: flex;
+    }
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-500);
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 600;
+    gap: 4px;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.bottom-nav-item.active {
+    color: var(--primary-color);
+}
+
+.bottom-nav-item i {
+    width: 22px;
+    height: 22px;
+}
+
+.bottom-nav-item .badge {
+    position: absolute;
+    top: 8px;
+    right: calc(50% - 18px);
+    background: var(--primary-color);
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    border: 2px solid white;
+}
+
+/* Toast Loader */
+.loader {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========================================
+   FOOD CARD COMPONENT - PRODUCTION READY
+   ======================================== */
+
+/* Import Premium Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+/* Food Card Grid System */
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: clamp(20px, 3vw, 30px);
+    padding-bottom: 50px;
+}
+
+/* Responsive Grid Breakpoints */
+@media (max-width: 639px) {
+    .food-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+        padding: 0 var(--space-4);
+    }
+
+    .hero {
+        padding: clamp(40px, 10vw, 80px) var(--space-4);
+    }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+    .food-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-xl);
+    }
+}
+
+@media (min-width: 1024px) {
+    .food-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+    }
+}
+
+/* Food Card Base */
+.food-card {
+    background: var(--color-card-bg);
+    border-radius: var(--food-card-radius);
+    box-shadow: var(--food-card-shadow);
+    overflow: hidden;
+    transition: var(--food-card-transition);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    cursor: default;
+}
+
+.food-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--food-card-shadow-hover);
+}
+
+/* Image Container - Fixed Aspect Ratio */
+.food-card__image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+}
+
+.food-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.food-card:hover .food-card__image {
+    transform: scale(1.08);
+}
+
+/* Skeleton Loading State */
+.food-card__image-wrapper.loading {
+    background: linear-gradient(90deg,
+            #f0f0f0 25%,
+            #e8e8e8 50%,
+            #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Category Badge */
+.food-card__badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-category);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: var(--font-body);
+    letter-spacing: 0.02em;
+    text-transform: capitalize;
+}
+
+/* Card Content Area */
+.food-card__content {
+    padding: clamp(var(--space-md), 4vw, var(--space-xl));
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* Food Name */
+.food-card__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+    font-weight: 700;
+    color: var(--dark-color);
+    margin: 0 0 var(--space-sm) 0;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Description (Optional) */
+.food-card__description {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-category);
+    line-height: 1.6;
+    margin-bottom: var(--space-md);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Price & CTA Container */
+.food-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: auto;
+    padding-top: var(--space-md);
+}
+
+/* Price Styling */
+.food-card__price {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 3vw, 1.5rem);
+    font-weight: 700;
+    color: var(--color-price);
+    letter-spacing: -0.01em;
+}
+
+/* Add to Cart Button */
+.food-card__button {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 10px 20px;
+    min-height: 44px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #e63946 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    white-space: nowrap;
+}
+
+.food-card__button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.food-card__button:active {
+    transform: scale(0.98);
+}
+
+.food-card__button:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Disabled State (Already in Cart) */
+.food-card__button:disabled {
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.7;
+}
+
+/* Loading State */
+.food-card__button--loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.food-card__button--loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid white;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Mobile Specific Adjustments */
+@media (max-width: 639px) {
+    .food-card__footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-sm);
+    }
+
+    .food-card__button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .food-card__price {
+        text-align: center;
+        padding-bottom: var(--space-xs);
+        border-bottom: 1px solid #f0f0f0;
+    }
+}
+
+/* Accessibility - Keyboard Focus */
+.food-card:focus-within {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 4px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .food-card {
+        border: 2px solid var(--dark-color);
+    }
+
+    .food-card__badge {
+        border: 1px solid var(--dark-color);
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+
+    .food-card,
+    .food-card__image,
+    .food-card__button {
+        transition: none;
+        animation: none;
+    }
+
+    .food-card:hover {
+        transform: none;
+    }
+
+    .food-card:hover .food-card__image {
+        transform: none;
+    }
+}
+
+/* ========================================
+   CART UI ENHANCEMENTS
+   ======================================== */
+.cart-item-detail {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--gray-100);
+    align-items: center;
+}
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.cart-item-info h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--dark-color);
+}
+
+.cart-item-info p {
+    margin: 2px 0;
+    font-size: 0.85rem;
+    color: var(--color-category);
+}
+
+.cart-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--gray-300);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.qty-btn:hover {
+    background: var(--gray-100);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.qty-val {
+    font-weight: 600;
+    min-width: 20px;
+    text-align: center;
+}
+
+.remove-item {
+    color: var(--danger-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.remove-item:hover {
+    opacity: 1;
+}
+
+/* ========================================
+   ORDER TRACKING ENHANCEMENTS
+   ======================================== */
+.tracking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+@media (max-width: 480px) {
+    .order-progress {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-6);
+        padding-left: 20px;
+        margin: 20px 0;
+    }
+
+    .progress-step {
+        flex-direction: row;
+        gap: var(--space-4);
+        width: 100%;
+    }
+
+    .progress-line {
+        width: 2px;
+        height: 30px;
+        margin-top: -15px;
+        margin-left: 17px;
+        margin-bottom: -15px;
+    }
+
+    .step-label {
+        display: block !important;
+        position: static !important;
+        text-align: left;
+    }
+}
+
+/* ========================================
+   LIVE PULSING ANIMATION
+   ======================================== */
+@keyframes pulse-live {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+        transform: scale(1.15);
+    }
+
+    70% {
+        box-shadow: 0 0 0 15px rgba(255, 107, 107, 0);
+        transform: scale(1.25);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+        transform: scale(1.15);
+    }
+}
+
+.progress-step.active.current-step .step-icon {
+    animation: pulse-live 2s infinite;
+    background: var(--primary-color);
+    border-color: #fff;
+    z-index: 10;
+}
+
+.progress-step.active.current-step .step-label {
+    color: var(--primary-color);
+    font-weight: 900;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.2);
+}
+
+.live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 107, 107, 0.1);
+    color: var(--primary-color);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.3;
+    }
+}
+
+/* Lucide Icon Sizing */
+.lucide {
+    width: 20px;
+    height: 20px;
+}
+
+.step-icon .lucide {
+    width: 22px;
+    height: 22px;
+}

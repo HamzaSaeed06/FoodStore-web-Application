@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - FoodStore</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .orders-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: clamp(16px, 4vw, 40px);
+        }
+
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-8);
+            flex-wrap: wrap;
+            gap: var(--space-4);
+        }
+
+        .orders-title {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: white;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--gray-700);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Order Card */
+        .order-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .order-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .order-id {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: #1a202c;
+        }
+
+        .order-date {
+            color: #a0aec0;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Order Progress Tracker */
+        .order-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .order-progress.cancelled {
+            background: #fff5f5;
+            color: #c53030;
+            padding: 20px;
+            border-radius: 12px;
+            font-weight: 800;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-icon {
+            width: 48px;
+            height: 48px;
+            background: #edf2f7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.4s ease;
+            border: 4px solid white;
+            box-shadow: 0 0 0 2px #edf2f7;
+        }
+
+        .step-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-align: center;
+        }
+
+        .progress-line {
+            height: 4px;
+            background: #edf2f7;
+            flex: 1;
+            margin: 0 -20px;
+            margin-top: -36px;
+            z-index: 1;
+            border-radius: 10px;
+        }
+
+        .progress-step.active .step-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.15);
+            box-shadow: 0 10px 20px rgba(118, 75, 162, 0.2);
+        }
+
+        .progress-step.active .step-label {
+            color: #764ba2;
+        }
+
+        .progress-line.active {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Vendor Section */
+        .vendor-section {
+            background: #fbfbfb;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #f1f1f1;
+        }
+
+        .vendor-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .vendor-name {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #2d3748;
+        }
+
+        .vendor-footer {
+            text-align: right;
+            font-weight: 800;
+            color: #1a202c;
+            padding-top: 16px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 1rem;
+        }
+
+        /* Order Items */
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Order Totals */
+        .order-summary-footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 2px solid #f8f9fa;
+        }
+
+        .order-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .order-total-row span:first-child {
+            font-weight: 700;
+            color: #718096;
+        }
+
+        .order-total {
+            font-size: 2.25rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .payment-method {
+            display: flex;
+            justify-content: space-between;
+            color: #a0aec0;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-pending {
+            background: #fffaf0;
+            color: #9c4221;
+        }
+
+        .status-accepted {
+            background: #ebf8ff;
+            color: #2b6cb0;
+        }
+
+        .status-preparing {
+            background: #fff5f5;
+            color: #c53030;
+        }
+
+        .status-ready {
+            background: #f0fff4;
+            color: #276749;
+        }
+
+        .status-completed {
+            background: #f7fafc;
+            color: #4a5568;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .orders-container {
+                padding: 16px;
+            }
+
+            .order-card {
+                padding: 20px;
+                border-radius: 16px;
+            }
+
+            .order-progress {
+                margin: 48px 0;
+            }
+
+            .step-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+
+            .step-label {
+                font-size: 0.6rem;
+                display: none;
+            }
+
+            .progress-step.active .step-label {
+                display: block;
+                position: absolute;
+                bottom: -32px;
+                width: 100px;
+                font-size: 0.65rem;
+            }
+
+            .progress-line {
+                margin-top: -24px;
+            }
+
+            .order-total {
+                font-size: 1.75rem;
+            }
+
+            .back-btn {
+                width: 100%;
+                justify-content: center;
+                order: 2;
+            }
+
+            .orders-title {
+                margin-bottom: 16px;
+                text-align: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="utensils"></i>
+                </div>
+                <span>FoodStore</span>
+            </a>
+            <div id="auth-links" class="navbar-actions">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="orders-container">
+        <div class="orders-header">
+            <h1 class="orders-title">📦 My Orders</h1>
+            <a href="index.html" class="back-btn">
+                <span>← Back to Shop</span>
+            </a>
+        </div>
+
+        <div id="orders-list">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading your orders...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <div class="bottom-nav" id="mobile-bottom-nav">
+        <!-- Injected by JS -->
+    </div>
+
+    <script type="module" src="js/orders.js"></script>
+</body>
+
+</html>

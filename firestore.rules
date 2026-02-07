@@ -1,0 +1,40 @@
+service cloud.firestore {
+
+
+ match /databases/{database}/documents {
+
+  function getRole() {
+    return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+  }
+
+  match /items/{item} {
+    allow read: if true;
+    allow write: if getRole() == 'vendor' &&
+                 get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isVerified == true;
+  }
+
+  match /users/{user} {
+    allow update: if getRole() == 'admin';
+    allow read, write: if request.auth.uid == user;
+  }
+  
+  match /shops/{shop} {
+     allow read: if true;
+     allow write: if getRole() == 'vendor';
+  }
+
+  match /orders/{order} {
+    // Users can read their own orders
+    allow read: if request.auth.uid == resource.data.userId;
+    
+    // Users can create orders
+    allow create: if request.auth != null;
+    
+    // Vendors can read all orders (they filter client-side)
+    allow read: if getRole() == 'vendor';
+    
+    // Vendors can update orders (for status changes)
+    allow update: if getRole() == 'vendor';
+  }
+ }
+}
