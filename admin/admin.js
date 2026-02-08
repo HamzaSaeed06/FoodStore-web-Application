@@ -90,7 +90,6 @@ function initVendorListener() {
     });
 }
 
-// Global function for button click (attached to window because of module scope)
 window.toggleVerification = async (uid, newStatus) => {
     try {
         const vendorRef = doc(db, "users", uid);

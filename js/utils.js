@@ -1,8 +1,5 @@
-/**
- * Utility Functions for Food Store App
- */
-
 // Inject SweetAlert2 dynamically
+
 const swalScript = document.createElement('script');
 swalScript.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
 document.head.appendChild(swalScript);

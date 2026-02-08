@@ -11,8 +11,6 @@ export async function signupUser(email, password, role) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Determine verification status
-        // Vendor = needs approval (false), User = auto verified (true), Admin = manual set (but for now let's assume default behavior)
         let isVerified = (role === 'user');
 
         // Create user document inside "users" collection
@@ -68,7 +66,7 @@ export async function logoutUser() {
             await setDoc(doc(db, "users", user.uid), { isOnline: false }, { merge: true });
         }
         await signOut(auth);
-        window.location.href = "../login.html"; // Assuming called from a subfolder
+        window.location.href = "../login.html";
     } catch (error) {
         console.error("Logout Error:", error);
         showToast("Error logging out", "error");
@@ -102,8 +100,6 @@ export async function loginWithGoogle() {
             });
             await showToast("Account Created!", "success", "Signed in with Google successfully.");
         } else {
-            // Existing user, get role
-            // Set Online
             await setDoc(userDocRef, { isOnline: true }, { merge: true });
 
             role = userDoc.data().role;

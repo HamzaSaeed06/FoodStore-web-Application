@@ -1,6 +1,3 @@
-/**
- * Real-Time Order Tracking for Users
- */
 
 import { auth, db } from './firebase.js';
 import { collection, query, where, orderBy, onSnapshot, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';

@@ -4,7 +4,6 @@ import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.
 import { showToast, toggleLoading } from './utils.js';
 import { logoutUser } from './auth.js';
 
-// --- CLOUDINARY CONFIG (Same as vendor/vendor.js) ---
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/ds05q0lls/image/upload";
 const CLOUDINARY_UPLOAD_PRESET = "mypreset";
 
@@ -45,7 +44,7 @@ const logoutBtn = document.getElementById('logout-btn');
 const authLinks = document.getElementById('auth-links');
 
 let currentUser = null;
-let selectedFile = null; // Store for delayed upload
+let selectedFile = null;
 
 // Init Auth
 onAuthStateChanged(auth, async (user) => {

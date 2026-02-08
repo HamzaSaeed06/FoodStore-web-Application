@@ -9,8 +9,6 @@ export function initRouteGuard(allowedRoles = []) {
             // Use window.location.pathname to check if we are already on login/signup or public home
             const path = window.location.pathname;
             if (!path.includes('login.html') && !path.includes('signup.html') && !path.endsWith('index.html') && path !== '/' && !path.endsWith('foodstore/')) {
-                // Adjust logic for local filesystem nuances vs server
-                // For now, strict redirect to login
                 window.location.href = "../login.html";
             }
         } else {
