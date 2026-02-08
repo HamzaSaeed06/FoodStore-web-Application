@@ -28,10 +28,9 @@ async function setupAuthLinks() {
     if (currentUser) {
         authLinks.innerHTML = `
             <a href="index.html" class="nav-menu-link">Home</a>
-            <a href="orders.html" class="nav-menu-link active">Orders</a>
+            <a href="orders.html" class="nav-menu-link active">Track Order</a>
             <a href="cart.html" class="nav-menu-link">Cart</a>
             <a href="profile.html" class="nav-menu-link">Account</a>
-            <a href="#" class="nav-menu-link" onclick="auth.signOut(); return false;">Logout</a>
         `;
     } else {
         authLinks.innerHTML = `
@@ -57,7 +56,7 @@ function updateBottomNav() {
         </a>
         <a href="orders.html" class="bottom-nav-item active">
             <i data-lucide="package"></i>
-            <span>Orders</span>
+            <span>Track Order</span>
         </a>
         <a href="profile.html" class="bottom-nav-item">
             <i data-lucide="user"></i>
@@ -107,12 +106,13 @@ function renderOrders(orders) {
     if (orders.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">📦</div>
+                <i class="empty-state-icon" data-lucide="package"></i>
                 <h3>No Orders Yet</h3>
                 <p>Start shopping and place your first order!</p>
                 <a href="index.html" class="btn">Browse Menu</a>
             </div>
         `;
+        lucide.createIcons();
         return;
     }
 
@@ -135,11 +135,11 @@ function renderOrderProgress(status) {
 
     const getIcon = (stepStatus) => {
         const icons = {
-            'pending': 'file-text',
-            'accepted': 'user-check',
-            'preparing': 'flame',
-            'ready': 'package',
-            'completed': 'check-circle'
+            'pending': 'clock',
+            'accepted': 'clipboard-check',
+            'preparing': 'cooking-pot',
+            'ready': 'package-check',
+            'completed': 'verified'
         };
         return icons[stepStatus] || 'circle';
     };

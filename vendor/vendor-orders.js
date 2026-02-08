@@ -26,6 +26,7 @@ export function listenToVendorOrders(vendorId) {
 
         renderVendorOrders();
         updateOrderBadge();
+        if (window.lucide) window.lucide.createIcons();
     });
 }
 
@@ -36,12 +37,13 @@ function renderVendorOrders() {
 
     if (vendorOrders.length === 0) {
         container.innerHTML = `
-            <div class="empty-orders">
-                <div style="font-size: 4rem; margin-bottom: 16px;">📦</div>
+            <div class="empty-orders-modern">
+                <i data-lucide="package" class="empty-state-icon-large"></i>
                 <h3>No Orders Yet</h3>
-                <p>Orders will appear here in real-time</p>
+                <p>Orders will appear here when customers start buying!</p>
             </div>
         `;
+        if (window.lucide) window.lucide.createIcons();
         return;
     }
 
@@ -63,30 +65,77 @@ function createOrderCard(order, vendorOrder) {
         'Just now';
 
     return `
-        <div class="order-card" data-status="${vendorOrder.status}">
-            <div class="order-card-header">
-                <div>
-                    <h4>Order #${order.id.slice(-6).toUpperCase()}</h4>
-                    <p class="customer-name">👤 ${order.userName}</p>
-                    <p class="customer-name" style="font-size: 0.8rem; color: var(--primary-color);">📞 ${order.userPhone || 'No Phone'}</p>
-                    <p class="customer-name" style="font-size: 0.8rem; background: #fff5f5; padding: 4px 8px; border-radius: 6px; margin-top: 4px;">📍 ${order.userAddress || 'No Address'}</p>
-                    <p class="customer-name" style="font-size: 0.8rem; margin-top: 4px;">📅 ${orderDate}</p>
+        <div class="order-form-card" data-status="${vendorOrder.status}">
+            <!-- Form Header: Order ID & Status -->
+            <div class="form-header">
+                <div class="order-id-section">
+                    <span class="form-label">ORDER ID</span>
+                    <h4 class="form-value">#${order.id.slice(-6).toUpperCase()}</h4>
                 </div>
-                <span class="status-badge status-${vendorOrder.status}">
+                <span class="form-status-badge status-${vendorOrder.status}">
                     ${getStatusText(vendorOrder.status)}
                 </span>
             </div>
-            <div class="order-items">
-                ${vendorOrder.items.map(item => `
-                    <div class="order-item">
-                        <span>${item.quantity}x ${item.name}</span>
-                        <span>${formatCurrency(item.price * item.quantity)}</span>
+
+            <!-- Section 1: Customer Information -->
+            <div class="form-section">
+                <h5 class="section-title"><i data-lucide="user" class="section-icon"></i> Customer Information</h5>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <span class="field-label">Customer Name</span>
+                        <span class="field-value highlight-text">${order.userName}</span>
                     </div>
-                `).join('')}
+                    <div class="form-field">
+                        <span class="field-label">Contact Number</span>
+                        <span class="field-value">${order.userPhone || 'Not Provided'}</span>
+                    </div>
+                    <div class="form-field full-width">
+                        <span class="field-label">Delivery Address</span>
+                        <span class="field-value address-text">${order.userAddress || 'Self-Pickup'}</span>
+                    </div>
+                </div>
             </div>
-            <div class="order-footer">
-                <strong>Total: ${formatCurrency(vendorOrder.subtotal)}</strong>
-                <div class="order-actions">
+
+            <!-- Section 2: Order Items -->
+            <div class="form-section">
+                <h5 class="section-title"><i data-lucide="shopping-bag" class="section-icon"></i> Order Details</h5>
+                <div class="order-items-list">
+                    ${vendorOrder.items.map(item => `
+                        <div class="form-item-row">
+                            <div class="item-snapshot-square">
+                                <img src="${item.imageUrl || '../assets/default-food.png'}" 
+                                     onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&h=100&fit=crop'"
+                                     alt="${item.name}">
+                            </div>
+                            <div class="item-info">
+                                <span class="item-name">${item.name}</span>
+                                <span class="item-meta-info">Quantity: <strong>${item.quantity}</strong> | Price: ${formatCurrency(item.price)}</span>
+                            </div>
+                            <div class="item-total-price">
+                                ${formatCurrency(item.price * item.quantity)}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <!-- Form Footer: Totals & Actions -->
+            <div class="form-footer">
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>Items Count:</span>
+                        <strong>${vendorOrder.items.reduce((sum, i) => sum + i.quantity, 0)}</strong>
+                    </div>
+                    <div class="summary-row total-highlight">
+                        <span>Total Payable:</span>
+                        <span class="grand-total">${formatCurrency(vendorOrder.subtotal)}</span>
+                    </div>
+                    <div class="summary-row date-row">
+                        <i data-lucide="calendar" style="width:12px;"></i>
+                        <span>Order Date: ${orderDate}</span>
+                    </div>
+                </div>
+                <div class="form-actions">
                     ${getOrderActions(order.id, vendorOrder)}
                 </div>
             </div>
@@ -97,10 +146,10 @@ function createOrderCard(order, vendorOrder) {
 // Get order actions
 function getOrderActions(orderId, vendorOrder) {
     const actions = {
-        'pending': `<button class="btn-accept" onclick="updateOrderStatus('${orderId}', '${vendorOrder.vendorId}', 'accepted')">✓ Accept</button>`,
-        'accepted': `<button class="btn-prepare" onclick="updateOrderStatus('${orderId}', '${vendorOrder.vendorId}', 'preparing')">🍳 Start Preparing</button>`,
-        'preparing': `<button class="btn-ready" onclick="updateOrderStatus('${orderId}', '${vendorOrder.vendorId}', 'ready')">✓ Mark Ready</button>`,
-        'ready': `<button class="btn-complete" onclick="updateOrderStatus('${orderId}', '${vendorOrder.vendorId}', 'completed')">✓ Complete</button>`
+        'pending': `<button class="btn-accept" onclick="updateOrderStatus('${orderId}', '${vendorOrder.vendorId}', 'accepted')"><i data-lucide="check-circle" style="width:18px;"></i> Accept Order</button>`,
+        'accepted': `<button class="btn-prepare" onclick="updateOrderStatus('${orderId}', '${vendorOrder.vendorId}', 'preparing')"><i data-lucide="cooking-pot" style="width:18px;"></i> Start Preparing</button>`,
+        'preparing': `<button class="btn-ready" onclick="updateOrderStatus('${orderId}', '${vendorOrder.vendorId}', 'ready')"><i data-lucide="package-check" style="width:18px;"></i> Mark Ready</button>`,
+        'ready': `<button class="btn-complete" onclick="updateOrderStatus('${orderId}', '${vendorOrder.vendorId}', 'completed')"><i data-lucide="file-check-2" style="width:18px;"></i> Complete Order</button>`
     };
     return actions[vendorOrder.status] || '';
 }

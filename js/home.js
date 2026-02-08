@@ -1,7 +1,7 @@
 import { auth, db } from './firebase.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { collection, query, where, getDocs, addDoc, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { showToast, formatCurrency, toggleLoading } from './utils.js';
+import { showToast, formatCurrency, toggleLoading, checkAccountCompleteness } from './utils.js';
 import { logoutUser } from './auth.js';
 
 // DOM Elements
@@ -18,18 +18,19 @@ let currentUser = null;
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     await updateNav(user);
+    if (user) {
+        checkAccountCompleteness(user, db);
+    }
 });
 
 async function updateNav(user) {
     if (user) {
         authLinks.innerHTML = `
             <a href="index.html" class="nav-menu-link active">Home</a>
-            <a href="orders.html" class="nav-menu-link">Orders</a>
+            <a href="orders.html" class="nav-menu-link">Track Order</a>
             <a href="cart.html" class="nav-menu-link" id="cart-menu-link">Cart</a>
             <a href="profile.html" class="nav-menu-link">Account</a>
-            <a href="#" class="nav-menu-link" id="logoutBtn">Logout</a>
         `;
-        document.getElementById('logoutBtn').addEventListener('click', logoutUser);
     } else {
         authLinks.innerHTML = `
             <a href="login.html" class="nav-menu-link">Login</a>
@@ -57,7 +58,7 @@ function updateBottomNav(user) {
             </a>
             <a href="orders.html" class="bottom-nav-item">
                 <i data-lucide="package"></i>
-                <span>Orders</span>
+                <span>Track Order</span>
             </a>
             <a href="profile.html" class="bottom-nav-item" id="bottomDashboardBtn">
                 <i data-lucide="user"></i>
@@ -144,7 +145,7 @@ function renderItems(items) {
     if (items.length === 0) {
         itemsGrid.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--color-category);">
-                <p style="font-size: 1.2rem; font-family: var(--font-display);">No items match your filter.</p>
+                <p style="font-size: 1.2rem; font-family: var(--font-main);">No items match your filter.</p>
                 <p style="margin-top: 10px;">Try selecting a different category.</p>
             </div>
         `;
@@ -171,7 +172,7 @@ function createFoodCard(item) {
         <div class="food-card__image-wrapper">
             <img 
                 src="${item.imageUrl}" 
-                alt="${item.name} - ${item.category} dish available for order"
+                alt="${item.name}"
                 class="food-card__image"
                 loading="lazy"
                 onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=450&fit=crop'"
@@ -179,15 +180,22 @@ function createFoodCard(item) {
             <span class="food-card__badge">${item.category}</span>
         </div>
         <div class="food-card__content">
+            <div class="food-card__vendor">
+                <i data-lucide="store" style="width: 14px; height: 14px;"></i>
+                <span>${item.vendorName || 'FoodStore Partner'}</span>
+            </div>
             <h3 class="food-card__title">${escapeHtml(item.name)}</h3>
             <div class="food-card__footer">
-                <span class="food-card__price">${formatCurrency(item.price)}</span>
+                <div class="food-card__price-tag">
+                    <span class="food-card__price-label">Starting from</span>
+                    <span class="food-card__price">${formatCurrency(item.price)}</span>
+                </div>
                 <button 
                     class="food-card__button"
-                    aria-label="Add ${item.name} to cart for ${formatCurrency(item.price)}"
+                    aria-label="Add to cart"
                     ${inCart ? 'disabled' : ''}
                 >
-                    ${inCart ? '<i data-lucide="check-circle" style="width:16px;"></i> Added' : '<i data-lucide="shopping-cart" style="width:16px;"></i> Add to Cart'}
+                    ${inCart ? '<i data-lucide="check-circle" style="width:18px;"></i> Added' : '<i data-lucide="shopping-cart" style="width:18px;"></i> Add'}
                 </button>
             </div>
         </div>

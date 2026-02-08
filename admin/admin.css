@@ -468,6 +468,7 @@ body {
 
 .btn-approve:hover {
     background: var(--hover-gradient);
+    color: var(--primary-color);
 }
 
 .btn-reject {

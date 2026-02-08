@@ -64,12 +64,10 @@ async function setupAuthLinks(user) {
 
     authLinks.innerHTML = `
         <a href="index.html" class="nav-menu-link">Home</a>
-        <a href="orders.html" class="nav-menu-link">Orders</a>
+        <a href="orders.html" class="nav-menu-link">Track Order</a>
         <a href="cart.html" class="nav-menu-link">Cart</a>
         <a href="profile.html" class="nav-menu-link active">Account</a>
-        <a href="#" class="nav-menu-link" id="navLogoutBtn">Logout</a>
     `;
-    document.getElementById('navLogoutBtn').addEventListener('click', logoutUser);
     if (window.lucide) lucide.createIcons();
 }
 
@@ -88,7 +86,7 @@ function updateBottomNav(user) {
         </a>
         <a href="orders.html" class="bottom-nav-item">
             <i data-lucide="package"></i>
-            <span>Orders</span>
+            <span>Track Order</span>
         </a>
         <a href="profile.html" class="bottom-nav-item active">
             <i data-lucide="user"></i>

@@ -14,7 +14,6 @@ const sidebarToggle = document.getElementById('sidebarToggle');
 const sidebar = document.querySelector('.admin-sidebar');
 const logoutBtn = document.getElementById('logoutBtn');
 const dashboardContent = document.getElementById('dashboard-content');
-const verificationWarning = document.getElementById('verification-warning');
 
 // Shop Form Elements
 const shopForm = document.getElementById('shopForm');
@@ -62,11 +61,20 @@ const imagePreview = document.getElementById('imagePreview');
 const uploadPlaceholder = document.getElementById('uploadPlaceholder');
 const removeImageBtn = document.getElementById('removeImageBtn');
 
+// Item Modal Image Elements
+const itemUploadArea = document.getElementById('itemUploadArea');
+const itemImageInput = document.getElementById('itemImageInput');
+const itemImagePreview = document.getElementById('itemImagePreview');
+const itemPreviewImg = document.getElementById('itemPreviewImg');
+const itemRemoveImageBtn = document.getElementById('itemRemoveImageBtn');
+const itemUploadPlaceholder = document.getElementById('itemUploadPlaceholder');
+
 // State
 let currentUser = null;
 let currentShop = null;
 let shopCategories = [];
 let uploadedImageUrl = "";
+let itemUploadedImageUrl = "";
 
 const STANDARD_CATEGORIES = ["Fast Food", "Desi", "Dessert", "Drinks", "Chinese"];
 
@@ -180,16 +188,19 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+// Expose logout for lockdown screen
+window.logoutUser = logoutUser;
+
 async function checkVerification(uid) {
     const userDoc = await getDoc(doc(db, "users", uid));
     if (userDoc.exists()) {
         const userData = userDoc.data();
+        const verificationPendingScreen = document.getElementById('pending-verification-screen');
+        const sidebarNav = document.querySelector('.sidebar-nav');
 
-        // Update profile from Firestore
+        // Update profile labels
         const displayName = userData.displayName || currentUser.email.split('@')[0];
         const photoURL = userData.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName) + '&background=FF6B6B&color=fff&size=128';
-
-        console.log("🖼️ Profile Debug:", { displayName, photoURL });
 
         document.getElementById('headerName').textContent = displayName;
         document.getElementById('mobileName').textContent = displayName;
@@ -197,32 +208,31 @@ async function checkVerification(uid) {
         const headerImgEl = document.querySelector('#headerAvatar img');
         const mobileImgEl = document.querySelector('#mobileAvatar img');
 
-        if (headerImgEl) {
-            headerImgEl.src = photoURL;
-            console.log("✅ Header img set to:", photoURL);
-        } else {
-            console.error("❌ Header img element not found!");
-        }
-
-        if (mobileImgEl) {
-            mobileImgEl.src = photoURL;
-            console.log("✅ Mobile img set to:", photoURL);
-        } else {
-            console.error("❌ Mobile img element not found!");
-        }
+        if (headerImgEl) headerImgEl.src = photoURL;
+        if (mobileImgEl) mobileImgEl.src = photoURL;
 
         if (userData.isVerified) {
             dashboardContent.style.display = 'block';
-            verificationWarning.style.display = 'none';
+            if (verificationPendingScreen) verificationPendingScreen.style.display = 'none';
+            if (sidebarNav) {
+                sidebarNav.style.pointerEvents = 'auto';
+                sidebarNav.style.opacity = '1';
+            }
             await loadShopDetails();
         } else {
-            dashboardContent.style.display = 'none'; // Ensure content is hidden
-            verificationWarning.style.display = 'block';
-            document.body.appendChild(verificationWarning); // Move warning out to body if needed, or just show it
-            // Actually, the structure in HTML has warning inside admin-content. admin-content is hidden by default. 
-            // Let's show admin-content but hide the tabs if unverified.
             dashboardContent.style.display = 'block';
-            document.getElementById('shop-tab').style.display = 'none';
+            if (verificationPendingScreen) verificationPendingScreen.style.display = 'block';
+
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+
+            // LOCK SIDEBAR: Hide actual nav links and only keep "My Shop" (active but disabled)
+            if (sidebarNav) {
+                sidebarNav.style.pointerEvents = 'none';
+                sidebarNav.style.opacity = '0.5';
+            }
+
+            if (window.lucide) lucide.createIcons();
         }
     }
 }
@@ -332,6 +342,73 @@ if (uploadArea) {
         shopImageInput.click();
     });
 }
+
+// --- ITEM IMAGE UPLOAD HANDLING ---
+async function handleItemFileUpload(file) {
+    if (!file) return;
+
+    showToast("Uploading item image...", "info");
+
+    try {
+        if (CLOUDINARY_URL.includes("YOUR_CLOUD_NAME")) {
+            itemUploadedImageUrl = URL.createObjectURL(file);
+        } else {
+            itemUploadedImageUrl = await uploadImage(file);
+        }
+
+        // Show Preview
+        itemImagePreview.style.display = 'block';
+        itemPreviewImg.src = itemUploadedImageUrl;
+        itemUploadPlaceholder.style.display = 'none';
+
+    } catch (error) {
+        showToast(`Item Upload Failed: ${error.message}`, "error");
+    }
+}
+
+itemImageInput?.addEventListener('change', (e) => {
+    handleItemFileUpload(e.target.files[0]);
+});
+
+if (itemUploadArea) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        itemUploadArea.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        }, false);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        itemUploadArea.addEventListener(eventName, () => {
+            itemUploadArea.style.borderColor = 'var(--primary-color)';
+            itemUploadArea.style.background = '#fff5f5';
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        itemUploadArea.addEventListener(eventName, () => {
+            itemUploadArea.style.borderColor = '#cbd5e0';
+            itemUploadArea.style.background = '#f8fafc';
+        }, false);
+    });
+
+    itemUploadArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        handleItemFileUpload(dt.files[0]);
+    }, false);
+
+    itemUploadArea.addEventListener('click', () => {
+        itemImageInput.click();
+    });
+}
+
+itemRemoveImageBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    itemUploadedImageUrl = "";
+    itemImageInput.value = "";
+    itemImagePreview.style.display = 'none';
+    itemUploadPlaceholder.style.display = 'flex';
+});
 
 removeImageBtn.addEventListener('click', (e) => {
     e.stopPropagation(); // Prevent triggering upload area click
@@ -599,7 +676,15 @@ itemForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!currentShop) { showToast("Create shop first!", "error"); return; }
 
+    // Validate image
+    if (!itemUploadedImageUrl) {
+        showToast("Please upload an item image", "error");
+        return;
+    }
+
     const data = getFormData(itemForm);
+    const btn = document.getElementById('addItemBtn');
+    toggleLoading(btn, true, 'Adding...');
 
 
     // CHECK & UPDATE SHOP CATEGORIES AUTOMATICALLY
@@ -627,12 +712,19 @@ itemForm.addEventListener('submit', async (e) => {
             name: data.name,
             price: Number(data.price),
             category: data.category,
-            imageUrl: data.imageUrl,
+            imageUrl: itemUploadedImageUrl, // Use the uploaded URL
             vendorId: currentUser.uid
         });
 
         showToast("Item added!", "success");
+
+        // Reset Item Modal State
         itemForm.reset();
+        itemUploadedImageUrl = "";
+        itemImageInput.value = "";
+        itemImagePreview.style.display = 'none';
+        itemUploadPlaceholder.style.display = 'flex';
+
         document.getElementById('itemModal').style.display = 'none';
         loadItems(currentShop.id);
 

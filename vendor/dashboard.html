@@ -79,14 +79,51 @@
         <!-- Dynamic Content -->
         <div class="admin-content" id="dashboard-content" style="display:none;">
 
-            <!-- Warning -->
-            <div id="verification-warning" class="verification-warning">
-                <div class="warning-header">
-                    <i data-lucide="alert-triangle"></i>
-                    Account Verification Pending
+            <!-- Tab Content Screens -->
+            <div id="pending-verification-screen" style="display:none;">
+                <div class="verification-lockdown-card animate-enter">
+                    <div class="lockdown-header">
+                        <div class="lockdown-icon-wrapper">
+                            <i data-lucide="shield-alert" class="lockdown-icon"></i>
+                        </div>
+                        <h2 class="lockdown-title">Account Verification Pending</h2>
+                        <p class="lockdown-subtitle">Your shop is currently under review by our administration team.</p>
+                    </div>
+
+                    <div class="verification-steps">
+                        <div class="v-step completed">
+                            <div class="v-step-icon"><i data-lucide="user-plus"></i></div>
+                            <div class="v-step-content">
+                                <h6>Account Created</h6>
+                                <p>Successfully registered as a vendor.</p>
+                            </div>
+                        </div>
+                        <div class="v-step active">
+                            <div class="v-step-icon"><i data-lucide="clock"></i></div>
+                            <div class="v-step-content">
+                                <h6>Admin Review</h6>
+                                <p>We are verifying your shop details and documents.</p>
+                            </div>
+                        </div>
+                        <div class="v-step pending">
+                            <div class="v-step-icon"><i data-lucide="check-circle"></i></div>
+                            <div class="v-step-content">
+                                <h6>Marketplace Live</h6>
+                                <p>Start receiving orders and managing your menu!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lockdown-footer">
+                        <div class="info-box">
+                            <i data-lucide="info"></i>
+                            <span>Processing usually takes 24-48 hours. We'll notify you via email once approved.</span>
+                        </div>
+                        <button onclick="logoutUser()" class="btn-logout-lockdown">
+                            <i data-lucide="log-out"></i> Logout
+                        </button>
+                    </div>
                 </div>
-                <p class="warning-message">Your shop is currently hidden. Please wait for an admin to verify your
-                    account.</p>
             </div>
 
             <!-- Tab: Shop Profile -->
@@ -144,7 +181,7 @@
                                 <!-- Image Upload -->
                                 <div class="form-group">
                                     <label>Profile Picture</label>
-                                    <div class="image-upload-container">
+                                    <div class="image-upload-area">
                                         <input type="file" id="shopImageInput" accept="image/*"
                                             class="image-input-hidden">
 
@@ -219,9 +256,6 @@
             <div id="orders-tab" class="tab-content" style="display:none;">
                 <div class="items-header">
                     <h2 class="items-title">Incoming Orders</h2>
-                    <button class="btn btn-outline" onclick="location.reload()">
-                        <i data-lucide="refresh-cw"></i> Refresh
-                    </button>
                 </div>
 
                 <div id="orders-container">
@@ -255,8 +289,22 @@
                         <input type="number" name="price" class="modern-input" required>
                     </div>
                     <div class="form-group">
-                        <label>Image URL (Cloudinary Link)</label>
-                        <input type="url" name="imageUrl" class="modern-input" placeholder="https://..." required>
+                        <label>Item Image</label>
+                        <div class="image-upload-area" id="itemUploadArea">
+                            <input type="file" id="itemImageInput" accept="image/*" class="image-input-hidden">
+
+                            <!-- Upload Placeholder -->
+                            <div class="upload-placeholder" id="itemUploadPlaceholder">
+                                <i data-lucide="upload" class="upload-icon"></i>
+                                <p>Click to upload item image</p>
+                            </div>
+
+                            <!-- Preview Container -->
+                            <div id="itemImagePreview" class="image-preview" style="display:none;">
+                                <img id="itemPreviewImg" src="" alt="Item Preview" class="preview-image">
+                                <button id="itemRemoveImageBtn" type="button" class="change-image-btn">Change</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Select Category</label>

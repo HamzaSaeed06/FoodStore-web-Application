@@ -12,6 +12,12 @@ const totalDisplay = document.getElementById('cart-total-display');
 const checkoutBtn = document.getElementById('final-checkout-btn');
 const phoneInput = document.getElementById('checkout-phone');
 const addressInput = document.getElementById('checkout-address');
+const addressDisplayArea = document.getElementById('address-display-area');
+const addressEditArea = document.getElementById('address-edit-area');
+const savedAddressText = document.getElementById('saved-address-text');
+const savedPhoneText = document.getElementById('saved-phone-text');
+const editAddressBtn = document.getElementById('edit-address-btn');
+const detectLocationBtn = document.getElementById('detect-location-btn');
 
 // State
 let cart = JSON.parse(localStorage.getItem('foodStoreCart')) || [];
@@ -24,31 +30,88 @@ onAuthStateChanged(auth, async (user) => {
     updateBottomNav();
 
     if (user) {
-        // Pre-fill user data if available
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
             const data = userDoc.data();
             phoneInput.value = data.phoneNumber || '';
             addressInput.value = data.defaultAddress || '';
+
+            if (data.phoneNumber && data.defaultAddress) {
+                showAddressDisplay(data.phoneNumber, data.defaultAddress);
+            } else {
+                showAddressEdit();
+            }
         }
     }
 
     renderCart();
 });
 
+function showAddressDisplay(phone, address) {
+    if (!addressDisplayArea) return;
+    addressDisplayArea.style.display = 'block';
+    addressEditArea.style.display = 'none';
+    savedAddressText.textContent = address;
+    savedPhoneText.textContent = phone;
+}
+
+function showAddressEdit() {
+    if (!addressDisplayArea) return;
+    addressDisplayArea.style.display = 'none';
+    addressEditArea.style.display = 'block';
+}
+
+if (editAddressBtn) {
+    editAddressBtn.addEventListener('click', showAddressEdit);
+}
+
+if (detectLocationBtn) {
+    detectLocationBtn.addEventListener('click', async () => {
+        if (!navigator.geolocation) {
+            showToast("Geolocation is not supported by your browser", "error");
+            return;
+        }
+
+        toggleLoading(detectLocationBtn, true, '<i data-lucide="map-pin" style="width:14px; margin-right:4px;"></i> Detecting...');
+        if (window.lucide) lucide.createIcons();
+
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const { latitude, longitude } = position.coords;
+            try {
+                // Using Nominatim for free reverse geocoding
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                const data = await res.json();
+                const address = data.display_name || `Lat: ${latitude}, Lon: ${longitude}`;
+                addressInput.value = address;
+                showAddressEdit(); // Ensure we are in edit mode to see it
+                showToast("Location detected!", "success");
+            } catch (err) {
+                console.error("Geocoding error:", err);
+                addressInput.value = `Lat: ${latitude}, Lon: ${longitude}`;
+                showToast("Location detected (Coordinates only)", "info");
+            } finally {
+                toggleLoading(detectLocationBtn, false, '<i data-lucide="map-pin" style="width:14px; margin-right:4px;"></i> Auto-detect Location');
+                if (window.lucide) lucide.createIcons();
+            }
+        }, (error) => {
+            console.error("Geolocation error:", error);
+            showToast("Could not get your location. Please check permissions.", "error");
+            toggleLoading(detectLocationBtn, false, '<i data-lucide="map-pin" style="width:14px; margin-right:4px;"></i> Auto-detect Location');
+            if (window.lucide) lucide.createIcons();
+        });
+    });
+}
+
 function setupAuthLinks() {
     if (!authLinks) return;
 
     authLinks.innerHTML = `
         <a href="index.html" class="nav-menu-link">Home</a>
-        <a href="orders.html" class="nav-menu-link">Orders</a>
+        <a href="orders.html" class="nav-menu-link">Track Order</a>
         <a href="cart.html" class="nav-menu-link active">Cart</a>
         <a href="profile.html" class="nav-menu-link">Account</a>
-        <a href="#" class="nav-menu-link" id="navLogoutBtn">Logout</a>
     `;
 
-    const logoutBtn = document.getElementById('navLogoutBtn');
-    if (logoutBtn) logoutBtn.addEventListener('click', logoutUser);
     if (window.lucide) lucide.createIcons();
 }
 
@@ -67,7 +130,7 @@ function updateBottomNav() {
         </a>
         <a href="orders.html" class="bottom-nav-item">
             <i data-lucide="package"></i>
-            <span>Orders</span>
+            <span>Track Order</span>
         </a>
         <a href="profile.html" class="bottom-nav-item">
             <i data-lucide="user"></i>
@@ -184,7 +247,8 @@ checkoutBtn.addEventListener('click', async () => {
                 name: item.name,
                 price: item.price,
                 quantity: item.qty,
-                category: item.category || ''
+                category: item.category || '',
+                imageUrl: item.imageUrl || ''
             });
 
             vendorOrdersMap[vendorId].subtotal += item.price * item.qty;
